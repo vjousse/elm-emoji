@@ -1,7 +1,7 @@
 #!/bin/env python3
 import ijson
 
-short_names_per_category: dict[str, list[str]] = {}
+short_names_per_category: dict[str, tuple[str, str]] = {}
 
 category_to_elm_id = {
     "activities": ("Activities", "activity"),
@@ -17,7 +17,7 @@ category_to_elm_id = {
 }
 
 
-elm_id_to_elm_name = {
+elm_id_to_elm_name: dict[str, str] = {
     "activity": "Activities",
     "flags": "Flags",
     "foods": "Food & Drink",
@@ -38,7 +38,7 @@ with open("emoji.json", "rb") as f:
         else:
             short_names_per_category[category] = [f'"{short_name}"']
 
-elm_categories = {}
+elm_categories: dict[str, list[str]] = {}
 
 for category in short_names_per_category:
     short_names = short_names_per_category[category]
