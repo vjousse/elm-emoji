@@ -213,9 +213,6 @@ displayEmoji color emoji =
 {- used to display emojis in a category.
 
    INPUTS
-       version   : the browser's most recent supported version of emojis
-                   this function filters out emojis that are unsupported,
-                   since they will just display as boxes anyway.
        names     : from category.emojis. this function takes a list of
                    emoji names and gets them from the emoji dict.
        emojiDict : the place where all the emojis are stored. from the
@@ -223,10 +220,9 @@ displayEmoji color emoji =
 -}
 
 
-getEmojisFromList : Int -> List String -> Dict String Emoji -> List Emoji
-getEmojisFromList version names emojiDict =
+getEmojisFromList : List String -> Dict String Emoji -> List Emoji
+getEmojisFromList names emojiDict =
     List.filterMap (\name -> get name emojiDict) names
-        |> List.filter (\emoji -> emoji.version < version)
 
 
 
@@ -234,8 +230,6 @@ getEmojisFromList version names emojiDict =
 
    INPUTS
        pickerId  : from model.id (see `categoryMapping`)
-       version   : the browser's most recent supported version of emojis
-                   (see `getEmojisFromList`)
        emojiDict : the place where all the emojis are stored. from the
                    Emojis module.
        color     : from model.skinColor (see `displayEmoji`)
@@ -243,12 +237,12 @@ getEmojisFromList version names emojiDict =
 -}
 
 
-displayCategory : Int -> Dict String Emoji -> SkinColor -> Category -> Html Msg
-displayCategory version emojiDict color cat =
+displayCategory : Dict String Emoji -> SkinColor -> Category -> Html Msg
+displayCategory emojiDict color cat =
     let
         -- get the emojis from cat.emojis
         catEmojis =
-            getEmojisFromList version cat.emojis emojiDict
+            getEmojisFromList cat.emojis emojiDict
 
         -- render them all
         renderedEmojis =
@@ -291,14 +285,8 @@ displayCategoryIcon activeCat ( cat, icon ) =
 view : Model -> Html.Html Msg
 view model =
     let
-        -- i've set the version to 10 here, since that seems to be the version that
-        -- is most widely supported. however, in the ideal case, you'd set this
-        -- dynamically based on what emoji version the user's browser supports.
-        emojiVersion =
-            10
-
         emojis =
-            displayCategory emojiVersion emojiDict model.skinColor model.activeCategory
+            displayCategory emojiDict model.skinColor model.activeCategory
 
         icons =
             List.map (displayCategoryIcon model.activeCategory) iconList
