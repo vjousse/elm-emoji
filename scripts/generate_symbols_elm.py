@@ -40,7 +40,22 @@ with open("emoji.json", "rb") as f:
 
 elm_categories: dict[str, list[str]] = {}
 
-for category in short_names_per_category:
+
+# Needed to put things in the correct order
+# "smileys & emotion" should be before "people and body"
+# so that the first choices of this category are smileys
+for category in [
+    "activities",
+    "flags",
+    "food & drink",
+    "animals & nature",
+    "objects",
+    "smileys & emotion",
+    "people & body",
+    "travel & places",
+    "symbols",
+    "component",
+]:
     short_names = short_names_per_category[category]
     elm_name, elm_id = category_to_elm_id[category]
 

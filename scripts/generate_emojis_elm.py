@@ -6,10 +6,33 @@ def unified_to_char(code_point: str) -> str:
     return "".join([chr(int(code, 16)) for code in code_point.split("-")])
 
 
-ELM_HEAD_STRING = """module Emojis exposing (emojiDict)
+ELM_HEAD_STRING = """module Emojis exposing (Category, Emoji, emojiDict)
 
 import Dict exposing (Dict)
-import Types exposing (Emoji)
+
+
+
+-- typedef for a category of emojis. in the
+-- main file, we render emojis by category.
+
+
+type alias Category =
+    { id : String -- short name for category
+    , name : String -- display name for category
+    , emojis : List String -- list of emoji names in category
+    }
+
+
+
+-- final data structure for an emoji
+
+
+type alias Emoji =
+    { name : String -- name of emoji
+    , native : String -- actual emoji (not codepoint)
+    , sortOrder : Int -- Global sorting index for all emoji, based on Unicode CLDR ordering
+    , skinVariations : Dict String String -- emojis of skin variations
+    }
 
 
 emojiDict : Dict String Emoji
@@ -29,9 +52,10 @@ with open("emoji.json", "rb") as f:
         first = False
 
         print(
-            '( "{short_name}", {{ name = "{name}", native = "{unified_to_char}", skinVariations = Dict.fromList [] }} )'.format(
+            '( "{short_name}", {{ name = "{name}", native = "{unified_to_char}", sortOrder = {sort_order}, skinVariations = Dict.fromList [] }} )'.format(
                 short_name=record["short_name"],
                 name=record["name"],
+                sort_order=record["sort_order"],
                 unified_to_char=unified_to_char(record["unified"]),
             )
         )

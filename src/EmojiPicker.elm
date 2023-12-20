@@ -26,14 +26,13 @@ for an example of how to use the picker in your application!
 -}
 
 import Dict exposing (Dict, get, isEmpty)
-import Emojis exposing (emojiDict)
+import Emojis exposing (Category, Emoji, emojiDict)
 import Html exposing (Attribute, Html, div, p, span, text)
 import Html.Attributes exposing (hidden)
 import Html.Events exposing (onClick)
 import Icons exposing (..)
 import Styles exposing (..)
 import Tuple exposing (first)
-import Types exposing (Category, Emoji)
 
 
 
@@ -223,6 +222,7 @@ displayEmoji color emoji =
 getEmojisFromList : List String -> Dict String Emoji -> List Emoji
 getEmojisFromList names emojiDict =
     List.filterMap (\name -> get name emojiDict) names
+        |> List.sortBy .sortOrder
 
 
 
