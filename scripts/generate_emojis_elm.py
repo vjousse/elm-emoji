@@ -51,12 +51,39 @@ with open("emoji.json", "rb") as f:
 
         first = False
 
+        skin_variations_tuples = []
+
+        if "skin_variations" in record:
+            skin_variations = record["skin_variations"]
+
+            # Old elmoji format
+            # , ("girl", {name="Girl", native="👧", nativeNonQual="👧", keywords=["Girl", "female", "woman", "teenager"], skinVariations=(Dict.fromList [("dark", "👧🏿"), ("light", "👧🏻"), ("medium", "👧🏽"), ("mediumDark", "👧🏾"), ("mediumLight", "👧🏼")]), version=5})
+            # color_mapping = {
+            #    "1F3FB": "light",
+            #    "1F3FC": "mediumLight",
+            #    "1F3FD": "medium",
+            #    "1F3FE": "mediumDark",
+            #    "1F3FF": "dark",
+            # }
+
+            for skin_color in skin_variations:
+                skin_variation = skin_variations[skin_color]["unified"]
+                skin_variation_string = unified_to_char(skin_variation)
+
+                skin_variations_tuples.append(
+                    '("{variation_name}", "{skin_variation_string}")'.format(
+                        variation_name=skin_color,
+                        skin_variation_string=skin_variation_string,
+                    )
+                )
+
         print(
-            '( "{short_name}", {{ name = "{name}", native = "{unified_to_char}", sortOrder = {sort_order}, skinVariations = Dict.fromList [] }} )'.format(
+            '( "{short_name}", {{ name = "{name}", native = "{unified_to_char}", sortOrder = {sort_order}, skinVariations = Dict.fromList [{skin_variations}] }} )'.format(
                 short_name=record["short_name"],
                 name=record["name"],
                 sort_order=record["sort_order"],
                 unified_to_char=unified_to_char(record["unified"]),
+                skin_variations=", ".join(skin_variations_tuples),
             )
         )
 
