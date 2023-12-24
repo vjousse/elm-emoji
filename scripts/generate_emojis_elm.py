@@ -1,9 +1,24 @@
 #!/bin/env python3
-import ijson
+import json
+import xml.etree.ElementTree as ET
 
 
-def unified_to_char(code_point: str) -> str:
+# Transform codepoint to string
+def unified_to_char(code_point):
     return "".join([chr(int(code, 16)) for code in code_point.split("-")])
+
+
+# Parse cldr annotations taken from https://github.com/unicode-org/cldr/releases
+# The file is located at common/annotations/en.xml
+tree = ET.parse("cldr-annotations-en.xml")
+root = tree.getroot()
+
+emojis_annotations = {}
+for annotation in root.iter("annotation"):
+    if "type" not in annotation.attrib:
+        emojis_annotations[annotation.attrib["cp"]] = [
+            '"{a}"'.format(a=a) for a in annotation.text.split(" | ")
+        ]
 
 
 ELM_HEAD_STRING = """module Emojis exposing (Category, Emoji, emojiDict)
@@ -32,6 +47,7 @@ type alias Emoji =
     , native : String -- actual emoji (not codepoint)
     , sortOrder : Int -- Global sorting index for all emoji, based on Unicode CLDR ordering
     , skinVariations : Dict String String -- emojis of skin variations
+    , keywords : List String -- keywords taken from the CLDR annotations
     }
 
 
@@ -42,10 +58,13 @@ emojiDict =
 
 ELM_TAIL_STRING = "]"
 
+# Parse json file taken from https://github.com/iamcal/emoji-data
 with open("emoji.json", "rb") as f:
+    data = json.load(f)
     print(ELM_HEAD_STRING, end="")
     first = True
-    for record in ijson.items(f, "item"):
+
+    for record in data:
         if not first:
             print("        , ", end="")
 
@@ -77,13 +96,21 @@ with open("emoji.json", "rb") as f:
                     )
                 )
 
+        native = unified_to_char(record["unified"])
+
+        if native in emojis_annotations:
+            keywords = emojis_annotations[native]
+        else:
+            keywords = []
+
         print(
-            '( "{short_name}", {{ name = "{name}", native = "{unified_to_char}", sortOrder = {sort_order}, skinVariations = Dict.fromList [{skin_variations}] }} )'.format(
+            '( "{short_name}", {{ name = "{name}", native = "{native}", sortOrder = {sort_order}, skinVariations = Dict.fromList [{skin_variations}] , keywords = [{keywords}] }} )'.format(
                 short_name=record["short_name"],
                 name=record["name"],
                 sort_order=record["sort_order"],
-                unified_to_char=unified_to_char(record["unified"]),
+                native=native,
                 skin_variations=", ".join(skin_variations_tuples),
+                keywords=", ".join(keywords),
             )
         )
 
