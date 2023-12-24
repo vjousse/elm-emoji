@@ -25,13 +25,15 @@ for an example of how to use the picker in your application!
 
 -}
 
+import Browser.Dom as Dom
 import Dict exposing (Dict, get, isEmpty)
 import Emojis exposing (Category, Emoji, emojiDict)
-import Html exposing (Attribute, Html, div, p, span, text)
-import Html.Attributes exposing (hidden)
-import Html.Events exposing (onClick)
+import Html exposing (Attribute, Html, div, input, p, span, text)
+import Html.Attributes exposing (autofocus, hidden, id, type_)
+import Html.Events exposing (onClick, onInput)
 import Icons exposing (..)
 import Styles exposing (..)
+import Task
 import Tuple exposing (first)
 
 
@@ -72,6 +74,7 @@ type alias Model =
     , offsetX : Float -- control the x-positon of the picker
     , offsetY : Float -- control the y-positon of the picker
     , closeOnSelect : Bool -- whether or not to close after an emoji is picked
+    , searchText : String
     }
 
 
@@ -97,6 +100,7 @@ init config =
     , closeOnSelect = config.closeOnSelect
     , offsetX = config.offsetX
     , offsetY = config.offsetY
+    , searchText = ""
     }
 
 
@@ -117,6 +121,7 @@ type Msg
     | ChooseSkinColor SkinColor
     | SelectCategory Category
     | Select String
+    | Search String
 
 
 {-| You'll need to catch the `Select` message in your parent module to
@@ -127,11 +132,14 @@ need to be updated.
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        Search text ->
+            ( { model | searchText = text }, Cmd.none )
+
         NoOp ->
             ( model, Cmd.none )
 
         Toggle ->
-            ( { model | hidden = not model.hidden }, Cmd.none )
+            ( { model | hidden = not model.hidden }, Task.attempt (\_ -> NoOp) (Dom.focus "search-text") )
 
         -- currently this case is never called, but in the future we might
         -- add in a skin color selector for users to choose different emoji
@@ -219,9 +227,15 @@ displayEmoji color emoji =
 -}
 
 
-getEmojisFromList : List String -> Dict String Emoji -> List Emoji
-getEmojisFromList names emojiDict =
+getEmojisFromList : List String -> String -> Dict String Emoji -> List Emoji
+getEmojisFromList names filterString emojiDict =
     List.filterMap (\name -> get name emojiDict) names
+        |> List.filter
+            (\emoji ->
+                -- Check in the emoji name or the keywords contain the filter string
+                List.any (\s -> String.contains (String.toLower filterString) (String.toLower s))
+                    (emoji.name :: emoji.keywords)
+            )
         |> List.sortBy .sortOrder
 
 
@@ -237,12 +251,12 @@ getEmojisFromList names emojiDict =
 -}
 
 
-displayCategory : Dict String Emoji -> SkinColor -> Category -> Html Msg
-displayCategory emojiDict color cat =
+displayCategory : Dict String Emoji -> String -> SkinColor -> Category -> Html Msg
+displayCategory emojiDict filterString color cat =
     let
         -- get the emojis from cat.emojis
         catEmojis =
-            getEmojisFromList cat.emojis emojiDict
+            getEmojisFromList cat.emojis filterString emojiDict
 
         -- render them all
         renderedEmojis =
@@ -286,7 +300,7 @@ view : Model -> Html.Html Msg
 view model =
     let
         emojis =
-            displayCategory emojiDict model.skinColor model.activeCategory
+            displayCategory emojiDict model.searchText model.skinColor model.activeCategory
 
         icons =
             List.map (displayCategoryIcon model.activeCategory) iconList
@@ -296,6 +310,9 @@ view model =
         [ div
             (hidden model.hidden :: Styles.emojiPicker model.offsetX model.offsetY)
             [ div Styles.emojisMain [ emojis ]
+            , div Styles.searchPanel
+                [ input (Styles.searchPanelText ++ [ type_ "text", id "search-text", onInput Search, autofocus True ]) []
+                ]
             , div Styles.iconPanel icons
             ]
         , div

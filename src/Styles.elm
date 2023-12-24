@@ -18,7 +18,7 @@ emojiPicker offsetX offsetY =
     , style "box-shadow" "0px 6px 20px 0px rgba(0, 0, 0, 0.13)"
     , style "z-index" "5"
     , style "width" "315px"
-    , style "height" "400px"
+    , style "height" "440px"
     , style "position" "absolute"
     , style "top" <| String.fromFloat offsetY ++ "px"
     , style "left" <| String.fromFloat offsetX ++ "px"
@@ -75,6 +75,27 @@ iconPanel =
     , style "border-top-width" "1px"
     , style "border-top-color" "rgba(0, 0, 0, 0.15)"
     , style "border-top-style" "solid"
+    ]
+
+
+searchPanel : List (Attribute msg)
+searchPanel =
+    [ style "width" "315px"
+    , style "height" "40px"
+    , style "text-align" "center"
+    , style "vertical-align" "middle"
+    , style "padding" "7px 0px 0px 0px"
+    , style "border-top-width" "1px"
+    , style "border-top-color" "rgba(0, 0, 0, 0.15)"
+    , style "border-top-style" "solid"
+    ]
+
+
+searchPanelText : List (Attribute msg)
+searchPanelText =
+    [ style "width" "300px"
+    , style "height" "25px"
+    , style "padding-top" "2px"
     ]
 
 
