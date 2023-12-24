@@ -1,6 +1,7 @@
 module Main exposing (main)
 
 import Browser
+import Browser.Dom as Dom
 import Css exposing (..)
 import Css.Global exposing (body, everything, global, html)
 import EmojiPicker exposing (Model, Msg(..), PickerConfig, init, update, view)
@@ -20,6 +21,7 @@ import Html.Styled
         )
 import Html.Styled.Attributes exposing (class, css, placeholder, rows, value)
 import Html.Styled.Events exposing (onClick, onInput)
+import Task
 
 
 
@@ -70,11 +72,21 @@ type Msg
     = NoOp
     | UpdateText String
     | EmojiMsg EmojiPicker.Msg
+    | Focus
+    | FocusResult (Result Dom.Error ())
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case msg of
+    case Debug.log "mainMsg" msg of
+        Focus ->
+            ( model
+            , Dom.focus "search-text" |> Task.attempt FocusResult
+            )
+
+        FocusResult _ ->
+            ( model, Cmd.none )
+
         NoOp ->
             ( model, Cmd.none )
 
@@ -82,7 +94,7 @@ update msg model =
             ( { model | text = s }, Cmd.none )
 
         EmojiMsg subMsg ->
-            case subMsg of
+            case Debug.log "subMsg" subMsg of
                 {- (4) Catch the `Select` submessage -}
                 EmojiPicker.Select s ->
                     let
@@ -108,7 +120,7 @@ update msg model =
                         ( newSubModel, _ ) =
                             EmojiPicker.update subMsg subModel
                     in
-                    ( { model | emojiModel = newSubModel }, Cmd.none )
+                    ( { model | emojiModel = newSubModel }, Dom.focus "search-text" |> Task.attempt FocusResult )
 
 
 
@@ -134,7 +146,8 @@ view model =
             , div [ content ]
                 [ div [ class "description" ]
                     [ p [ bodyText ]
-                        [ text "Below is a mockup of an input field for a generic messaging application. Try it out!" ]
+                        [ text "Below is a mockup of an input field for a generic messaging application. Try it out!"
+                        ]
                     ]
                 , div [ inputWrapper ]
                     [ div []

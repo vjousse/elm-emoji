@@ -25,7 +25,6 @@ for an example of how to use the picker in your application!
 
 -}
 
-import Browser.Dom as Dom
 import Dict exposing (Dict, get, isEmpty)
 import Emojis exposing (Category, Emoji, emojiDict)
 import Html exposing (Attribute, Html, div, input, p, span, text)
@@ -33,7 +32,6 @@ import Html.Attributes exposing (autofocus, hidden, id, type_)
 import Html.Events exposing (onClick, onInput)
 import Icons exposing (..)
 import Styles exposing (..)
-import Task
 import Tuple exposing (first)
 
 
@@ -117,11 +115,11 @@ be of interest to the parent module:
 -}
 type Msg
     = NoOp
-    | Toggle
     | ChooseSkinColor SkinColor
     | SelectCategory Category
     | Select String
     | Search String
+    | Toggle
 
 
 {-| You'll need to catch the `Select` message in your parent module to
@@ -131,21 +129,18 @@ need to be updated.
 -}
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case msg of
-        Search text ->
-            ( { model | searchText = text }, Cmd.none )
-
-        NoOp ->
-            ( model, Cmd.none )
-
-        Toggle ->
-            ( { model | hidden = not model.hidden }, Task.attempt (\_ -> NoOp) (Dom.focus "search-text") )
-
+    case Debug.log "msg" msg of
         -- currently this case is never called, but in the future we might
         -- add in a skin color selector for users to choose different emoji
         -- variants.
         ChooseSkinColor s ->
             ( { model | skinColor = s }, Cmd.none )
+
+        NoOp ->
+            ( model, Cmd.none )
+
+        Search text ->
+            ( { model | searchText = text }, Cmd.none )
 
         SelectCategory cat ->
             ( { model | activeCategory = cat }, Cmd.none )
@@ -161,6 +156,13 @@ update msg model =
                         model
             in
             ( newModel, Cmd.none )
+
+        Toggle ->
+            ( { model
+                | hidden = not model.hidden
+              }
+            , Cmd.none
+            )
 
 
 
