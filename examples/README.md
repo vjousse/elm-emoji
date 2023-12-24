@@ -1,8 +1,9 @@
 # Installing
 
     npm install --save-dev elm-watch
-    npx elm-watch hot
 
 # Running
 
-Open the `index.html` file in your browser.
+    npx elm-watch hot
+
+Then, open the `index.html` file in your browser.

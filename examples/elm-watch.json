@@ -1,6 +1,6 @@
 {
   "targets": {
-    "My target name": {
+    "Elm-emoji example": {
       "inputs": ["src/Main.elm"],
       "output": "build/main.js"
     }
