@@ -1,4 +1,4 @@
-# Elmoji
+# elm-emoji
 
 _Fork of [elmoji](https://github.com/Holmusk/elmoji)_
 
