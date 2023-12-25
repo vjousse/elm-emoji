@@ -3,7 +3,7 @@ module Main exposing (main)
 import Browser
 import Browser.Dom as Dom
 import Css exposing (..)
-import Css.Global exposing (body, everything, global, html)
+import Css.Global exposing (body, everything, global)
 import EmojiPicker exposing (Model, Msg(..), PickerConfig, init, update, view)
 import Html
 import Html.Styled
@@ -13,7 +13,6 @@ import Html.Styled
         , button
         , div
         , fromUnstyled
-        , h1
         , p
         , text
         , textarea
@@ -183,7 +182,7 @@ view model =
 
 
 subscriptions : Model -> Sub Msg
-subscriptions model =
+subscriptions _ =
     Sub.none
 
 
