@@ -5,7 +5,7 @@ _Fork of [elmoji](https://github.com/Holmusk/elmoji)_
 Check out the [demo](https://vjousse.github.io/elm-emoji/)!
 
 <p align="center">
-  <img width="535"src="https://picsum.photos/460/300">
+  <img width="535"src="screenshot.png">
 </p>
 
 This module provides a general-purpose emoji picker written in Elm. In order to integrate this with your application, there are a few things that need to be implemented (check the `examples` directory for a sample).
