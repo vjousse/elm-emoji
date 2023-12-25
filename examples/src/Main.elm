@@ -253,6 +253,7 @@ inputWrapper =
         , margin auto
         , marginTop (px 300)
         , display block
+        , position relative
         ]
 
 
@@ -288,12 +289,12 @@ bodyText =
 buttonWrapper : Attribute Msg
 buttonWrapper =
     css
-        [ position relative
+        [ position absolute
         , borderStyle none
         , borderRadius (px 4)
-        , float left
         , display inlineBlock
         , marginTop (px 3)
+        , right (px 5)
         ]
 
 

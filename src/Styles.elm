@@ -17,7 +17,7 @@ emojiPicker offsetX offsetY =
     , style "box-shadow" "0px 4px 6px 0px rgba(0, 0, 0, 0.15)"
     , style "box-shadow" "0px 6px 20px 0px rgba(0, 0, 0, 0.13)"
     , style "z-index" "5"
-    , style "width" "315px"
+    , style "width" "325px"
     , style "height" "440px"
     , style "position" "absolute"
     , style "top" <| String.fromFloat offsetY ++ "px"
@@ -28,7 +28,7 @@ emojiPicker offsetX offsetY =
 
 emojisMain : List (Attribute msg)
 emojisMain =
-    [ style "width" "320px"
+    [ style "width" "335px"
     , style "height" "350px"
     , style "overflow-y" "auto"
     , style "padding" "0px 0px 0px 5px"
@@ -38,7 +38,7 @@ emojisMain =
 
 category : List (Attribute msg)
 category =
-    [ style "width" "300px" ]
+    [ style "width" "320px" ]
 
 
 categoryTitle : List (Attribute msg)
@@ -48,7 +48,6 @@ categoryTitle =
     , style "margin" "7px 0px 0px 0px"
     , style "padding" "2px 6px 3px 7px"
     , style "color" "#555555"
-    , style "background-color" "rgb(255, 255, 255)"
     ]
 
 
