@@ -4,3 +4,5 @@ build/
 gh-pages/
 
 scripts/.venv
+scripts/*.xml
+scripts/*.json
