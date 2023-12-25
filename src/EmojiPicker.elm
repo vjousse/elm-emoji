@@ -5,7 +5,7 @@ module EmojiPicker exposing
     )
 
 {-| This module provides a general-purpose emoji picker, with emojis
-segregated by category. See [this file](https://github.com/Holmusk/elmoji/blob/master/examples/Main.elm)
+segregated by category. See [this file](https://github.com/vjousse/elm-emoji/blob/master/examples/src/Main.elm)
 for an example of how to use the picker in your application!
 
 
