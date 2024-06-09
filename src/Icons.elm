@@ -1,14 +1,10 @@
-module Icons exposing
-    ( activity
-    , flags
-    , foods
-    , iconList
-    , nature
-    , objects
-    , people
-    , places
-    , symbols
-    )
+module Icons exposing (activity, flags, foods, iconList, nature, objects, people, places, symbols)
+
+{-| This module provides emojis by category
+
+@docs activity, flags, foods, iconList, nature, objects, people, places, symbols
+
+-}
 
 import Emojis exposing (Category)
 import Html exposing (Html)
@@ -28,6 +24,8 @@ import Svg.Attributes exposing (d, height, viewBox, width, xmlSpace)
  -------------------------------------------------------------}
 
 
+{-| get all icons by category
+-}
 iconList : List ( Category, Attribute msg -> Html msg )
 iconList =
     [ people
@@ -54,6 +52,8 @@ helperFun d_attributes style =
         List.map (\path_attribute -> path [ path_attribute, style ] []) d_attributes
 
 
+{-| emojis in the activity category
+-}
 activity : ( Category, Attribute msg -> Html msg )
 activity =
     ( { id = "activity"
@@ -64,6 +64,8 @@ activity =
     )
 
 
+{-| emojis in the flags category
+-}
 flags : ( Category, Attribute msg -> Html msg )
 flags =
     ( { id = "flags"
@@ -74,6 +76,8 @@ flags =
     )
 
 
+{-| emojis in the foods category
+-}
 foods : ( Category, Attribute msg -> Html msg )
 foods =
     ( { id = "foods"
@@ -84,6 +88,8 @@ foods =
     )
 
 
+{-| emojis in the nature category
+-}
 nature : ( Category, Attribute msg -> Html msg )
 nature =
     ( { id = "nature"
@@ -94,6 +100,8 @@ nature =
     )
 
 
+{-| emojis in the objects category
+-}
 objects : ( Category, Attribute msg -> Html msg )
 objects =
     ( { id = "objects"
@@ -104,6 +112,8 @@ objects =
     )
 
 
+{-| emojis in the people category
+-}
 people : ( Category, Attribute msg -> Html msg )
 people =
     ( { id = "people"
@@ -114,6 +124,8 @@ people =
     )
 
 
+{-| emojis in the places category
+-}
 places : ( Category, Attribute msg -> Html msg )
 places =
     ( { id = "places"
@@ -124,6 +136,8 @@ places =
     )
 
 
+{-| emojis in the symbols category
+-}
 symbols : ( Category, Attribute msg -> Html msg )
 symbols =
     ( { id = "symbols"
