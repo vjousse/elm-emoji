@@ -27,8 +27,8 @@ for an example of how to use the picker in your application!
 
 import Dict exposing (Dict, get, isEmpty)
 import Emojis exposing (Category, Emoji, emojiDict)
-import Html exposing (Attribute, Html, div, input, p, span, text)
-import Html.Attributes exposing (autofocus, hidden, id, type_)
+import Html exposing (Attribute, Html, div, img, input, p, span, text)
+import Html.Attributes exposing (alt, autofocus, hidden, id, src, style, title, type_)
 import Html.Events exposing (onClick, onInput)
 import Icons exposing (..)
 import Styles exposing (..)
@@ -49,12 +49,16 @@ configuration parameters.
 `offsetX`: the horizontal offset from where the picker is declared
 `offsetY`: the vertical offset from where the picker is declared
 `closeOnSelect`: whether or not the close the picker after an emoji is selected
+`customEmojis`: a list of emojis you would like to add to the custom category
 
 -}
 type alias PickerConfig =
     { offsetX : Float
     , offsetY : Float
     , closeOnSelect : Bool
+    , customEmojis : List Emoji
+    , customEmojisHeight : Maybe String
+    , customEmojisWidth : Maybe String
     }
 
 
@@ -66,13 +70,16 @@ emoji variants.
 
 -}
 type alias Model =
-    { skinColor : SkinColor -- for future use (some emojis have variants)
-    , activeCategory : Category -- for displaying emojis
+    { activeCategory : Category -- for displaying emojis
+    , closeOnSelect : Bool -- whether or not to close after an emoji is picked
+    , customEmojis : List Emoji -- list of emojis provided by the user
+    , customEmojisHeight : Maybe String
+    , customEmojisWidth : Maybe String
     , hidden : Bool -- for toggling the emoji picker
     , offsetX : Float -- control the x-positon of the picker
     , offsetY : Float -- control the y-positon of the picker
-    , closeOnSelect : Bool -- whether or not to close after an emoji is picked
     , searchText : String
+    , skinColor : SkinColor -- for future use (some emojis have variants)
     }
 
 
@@ -92,13 +99,16 @@ type alias Model =
 -}
 init : PickerConfig -> Model
 init config =
-    { skinColor = "none"
-    , activeCategory = first people
+    { activeCategory = first people
+    , customEmojis = config.customEmojis
+    , customEmojisHeight = config.customEmojisHeight
+    , customEmojisWidth = config.customEmojisWidth
     , hidden = True
     , closeOnSelect = config.closeOnSelect
     , offsetX = config.offsetX
     , offsetY = config.offsetY
     , searchText = ""
+    , skinColor = "none"
     }
 
 
@@ -205,8 +215,8 @@ selectSkinVariation color emoji =
 -}
 
 
-displayEmoji : SkinColor -> Emoji -> Html Msg
-displayEmoji color emoji =
+displayEmoji : SkinColor -> Maybe String -> Maybe String -> Emoji -> Html Msg
+displayEmoji color customEmojisWidth customEmojisHeight emoji =
     let
         native =
             selectSkinVariation color emoji
@@ -215,7 +225,20 @@ displayEmoji color emoji =
     in
     span
         ((onClick <| Select native) :: Styles.emoji)
-        [ text native ]
+        [ case emoji.imgUrl of
+            Nothing ->
+                text native
+
+            Just url ->
+                img
+                    [ src url
+                    , alt native
+                    , title native
+                    , style "height" (customEmojisHeight |> Maybe.withDefault "34px")
+                    , style "width" (customEmojisWidth |> Maybe.withDefault "34px")
+                    ]
+                    []
+        ]
 
 
 
@@ -253,8 +276,8 @@ getEmojisFromList names filterString emojiDict =
 -}
 
 
-displayCategory : Dict String Emoji -> String -> SkinColor -> Category -> Html Msg
-displayCategory emojiDict filterString color cat =
+displayCategory : Dict String Emoji -> String -> SkinColor -> Category -> Maybe String -> Maybe String -> Html Msg
+displayCategory emojiDict filterString color cat customEmojisWidth customEmojisHeight =
     let
         -- get the emojis from cat.emojis
         catEmojis =
@@ -262,7 +285,7 @@ displayCategory emojiDict filterString color cat =
 
         -- render them all
         renderedEmojis =
-            List.map (displayEmoji color) catEmojis
+            List.map (displayEmoji color customEmojisWidth customEmojisHeight) catEmojis
     in
     div
         Styles.category
@@ -302,10 +325,19 @@ view : Model -> Html.Html Msg
 view model =
     let
         emojis =
-            displayCategory emojiDict model.searchText model.skinColor model.activeCategory
+            displayCategory
+                (Dict.union
+                    emojiDict
+                    (Dict.fromList (model.customEmojis |> List.map (\ce -> ( ce.name, ce ))))
+                )
+                model.searchText
+                model.skinColor
+                model.activeCategory
+                model.customEmojisWidth
+                model.customEmojisHeight
 
         icons =
-            List.map (displayCategoryIcon model.activeCategory) iconList
+            List.map (displayCategoryIcon model.activeCategory) (iconList model.customEmojis)
     in
     div
         [ hidden model.hidden ]

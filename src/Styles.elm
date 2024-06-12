@@ -17,7 +17,7 @@ emojiPicker offsetX offsetY =
     , style "box-shadow" "0px 4px 6px 0px rgba(0, 0, 0, 0.15)"
     , style "box-shadow" "0px 6px 20px 0px rgba(0, 0, 0, 0.13)"
     , style "z-index" "5"
-    , style "width" "325px"
+    , style "width" "335px"
     , style "height" "440px"
     , style "position" "absolute"
     , style "top" <| String.fromFloat offsetY ++ "px"
@@ -66,7 +66,7 @@ emoji =
 
 iconPanel : List (Attribute msg)
 iconPanel =
-    [ style "width" "315px"
+    [ style "width" "335px"
     , style "height" "40px"
     , style "text-align" "center"
     , style "vertical-align" "middle"

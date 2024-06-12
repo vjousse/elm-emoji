@@ -1,4 +1,7 @@
-module Icons exposing (activity, flags, foods, iconList, nature, objects, people, places, symbols)
+module Icons exposing
+    ( activity, flags, foods, iconList, nature, objects, people, places, symbols
+    , custom_path
+    )
 
 {-| This module provides emojis by category
 
@@ -6,7 +9,7 @@ module Icons exposing (activity, flags, foods, iconList, nature, objects, people
 
 -}
 
-import Emojis exposing (Category)
+import Emojis exposing (Category, Emoji)
 import Html exposing (Html)
 import Styles exposing (categoryIcon)
 import Svg exposing (Attribute, path, svg)
@@ -26,8 +29,8 @@ import Svg.Attributes exposing (d, height, viewBox, width, xmlSpace)
 
 {-| get all icons by category
 -}
-iconList : List ( Category, Attribute msg -> Html msg )
-iconList =
+iconList : List Emoji -> List ( Category, Attribute msg -> Html msg )
+iconList customEmojis =
     [ people
     , nature
     , foods
@@ -37,6 +40,12 @@ iconList =
     , symbols
     , flags
     ]
+        ++ (if List.isEmpty customEmojis then
+                []
+
+            else
+                [ custom customEmojis ]
+           )
 
 
 helperFun : List (Attribute msg) -> Attribute msg -> Html msg
@@ -61,6 +70,18 @@ activity =
       , emojis = [ "mahjong", "black_joker", "ribbon", "gift", "jack_o_lantern", "christmas_tree", "fireworks", "sparkler", "balloon", "tada", "confetti_ball", "tanabata_tree", "bamboo", "dolls", "flags", "wind_chime", "rice_scene", "medal", "reminder_ribbon", "admission_tickets", "fishing_pole_and_fish", "art", "ticket", "performing_arts", "video_game", "dart", "slot_machine", "8ball", "game_die", "bowling", "flower_playing_cards", "running_shirt_with_sash", "tennis", "ski", "basketball", "sports_medal", "trophy", "football", "rugby_football", "cricket_bat_and_ball", "volleyball", "field_hockey_stick_and_ball", "ice_hockey_stick_and_puck", "table_tennis_paddle_and_ball", "badminton_racquet_and_shuttlecock", "gun", "crystal_ball", "joystick", "frame_with_picture", "sled", "diving_mask", "goal_net", "first_place_medal", "second_place_medal", "third_place_medal", "boxing_glove", "martial_arts_uniform", "curling_stone", "lacrosse", "softball", "flying_disc", "red_envelope", "firecracker", "jigsaw", "thread", "yarn", "teddy_bear", "yo-yo", "kite", "magic_wand", "pinata", "nesting_dolls", "sewing_needle", "knot", "mirror_ball", "chess_pawn", "spades", "clubs", "hearts", "diamonds", "soccer", "baseball", "golf", "ice_skate", "sparkles" ]
       }
     , helperFun activity_path
+    )
+
+
+{-| custom emojis
+-}
+custom : List Emoji -> ( Category, Attribute msg -> Html msg )
+custom customEmojis =
+    ( { id = "custom"
+      , name = "Custom"
+      , emojis = customEmojis |> List.map .name
+      }
+    , helperFun custom_path
     )
 
 
@@ -151,6 +172,11 @@ symbols =
 activity_path : List (Attribute msg)
 activity_path =
     [ d "M12 0C5.373 0 0 5.372 0 12c0 6.627 5.373 12 12 12 6.628 0 12-5.373 12-12 0-6.628-5.372-12-12-12m9.949 11H17.05c.224-2.527 1.232-4.773 1.968-6.113A9.966 9.966 0 0 1 21.949 11M13 11V2.051a9.945 9.945 0 0 1 4.432 1.564c-.858 1.491-2.156 4.22-2.392 7.385H13zm-2 0H8.961c-.238-3.165-1.536-5.894-2.393-7.385A9.95 9.95 0 0 1 11 2.051V11zm0 2v8.949a9.937 9.937 0 0 1-4.432-1.564c.857-1.492 2.155-4.221 2.393-7.385H11zm4.04 0c.236 3.164 1.534 5.893 2.392 7.385A9.92 9.92 0 0 1 13 21.949V13h2.04zM4.982 4.887C5.718 6.227 6.726 8.473 6.951 11h-4.9a9.977 9.977 0 0 1 2.931-6.113M2.051 13h4.9c-.226 2.527-1.233 4.771-1.969 6.113A9.972 9.972 0 0 1 2.051 13m16.967 6.113c-.735-1.342-1.744-3.586-1.968-6.113h4.899a9.961 9.961 0 0 1-2.931 6.113" ]
+
+
+custom_path : List (Attribute msg)
+custom_path =
+    [ d "M0 0h11v2H0zM4 11h3V6h4V4H0v2h4zM15.5 17c1.381 0 2.5-1.116 2.5-2.493s-1.119-2.493-2.5-2.493S13 13.13 13 14.507 14.119 17 15.5 17m0-2.986c.276 0 .5.222.5.493 0 .272-.224.493-.5.493s-.5-.221-.5-.493.224-.493.5-.493M21.5 19.014c-1.381 0-2.5 1.116-2.5 2.493S20.119 24 21.5 24s2.5-1.116 2.5-2.493-1.119-2.493-2.5-2.493m0 2.986a.497.497 0 0 1-.5-.493c0-.271.224-.493.5-.493s.5.222.5.493a.497.497 0 0 1-.5.493M22 13l-9 9 1.513 1.5 8.99-9.009zM17 11c2.209 0 4-1.119 4-2.5V2s.985-.161 1.498.949C23.01 4.055 23 6 23 6s1-1.119 1-3.135C24-.02 21 0 21 0h-2v6.347A5.853 5.853 0 0 0 17 6c-2.209 0-4 1.119-4 2.5s1.791 2.5 4 2.5M10.297 20.482l-1.475-1.585a47.54 47.54 0 0 1-1.442 1.129c-.307-.288-.989-1.016-2.045-2.183.902-.836 1.479-1.466 1.729-1.892s.376-.871.376-1.336c0-.592-.273-1.178-.818-1.759-.546-.581-1.329-.871-2.349-.871-1.008 0-1.79.293-2.344.879-.556.587-.832 1.181-.832 1.784 0 .813.419 1.748 1.256 2.805-.847.614-1.444 1.208-1.794 1.784a3.465 3.465 0 0 0-.523 1.833c0 .857.308 1.56.924 2.107.616.549 1.423.823 2.42.823 1.173 0 2.444-.379 3.813-1.137L8.235 24h2.819l-2.09-2.383 1.333-1.135zm-6.736-6.389a1.02 1.02 0 0 1 .73-.286c.31 0 .559.085.747.254a.849.849 0 0 1 .283.659c0 .518-.419 1.112-1.257 1.784-.536-.651-.805-1.231-.805-1.742a.901.901 0 0 1 .302-.669M3.74 22c-.427 0-.778-.116-1.057-.349-.279-.232-.418-.487-.418-.766 0-.594.509-1.288 1.527-2.083.968 1.134 1.717 1.946 2.248 2.438-.921.507-1.686.76-2.3.76" ]
 
 
 flags_path : List (Attribute msg)

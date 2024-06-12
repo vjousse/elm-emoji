@@ -48,6 +48,7 @@ type alias Emoji =
     , sortOrder : Int -- Global sorting index for all emoji, based on Unicode CLDR ordering
     , skinVariations : Dict String String -- emojis of skin variations
     , keywords : List String -- keywords taken from the CLDR annotations
+    , imgUrl : Maybe String -- The image of the emoji if any (used for custom emojis)
     }
 
 
@@ -104,7 +105,7 @@ with open("emoji.json", "rb") as f:
             keywords = []
 
         print(
-            '( "{short_name}", {{ name = "{name}", native = "{native}", sortOrder = {sort_order}, skinVariations = Dict.fromList [{skin_variations}] , keywords = [{keywords}] }} )'.format(
+            '( "{short_name}", {{ name = "{name}", native = "{native}", sortOrder = {sort_order}, skinVariations = Dict.fromList [{skin_variations}] , keywords = [{keywords}], imgUrl = Nothing }} )'.format(
                 short_name=record["short_name"],
                 name=record["name"],
                 sort_order=record["sort_order"],
