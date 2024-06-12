@@ -23,9 +23,35 @@ This module provides a general-purpose emoji picker written in Elm. In order to 
    ```elm
    pickerConfig : PickerConfig
    pickerConfig =
-       { offsetX       = -271  -- horizontal offset
-       , offsetY       = -410  -- vertical offset
-       , closeOnSelect = True  -- close after clicking an emoji
+       { offsetX = -281 -- x position relative to button
+       , offsetY = -450 -- y position relative to button
+       , closeOnSelect = True -- whether or not to close after an emoji is picked
+       , customEmojis =
+           -- custom emojis you may want to display
+           [ { name = ":ablobattention:"
+             , native = ":ablobattention:"
+             , sortOrder = 1
+             , skinVariations = Dict.fromList []
+             , keywords = []
+             , imgUrl = Just "https://static.mamot.fr/custom_emojis/images/000/198/601/original/2b89f4eb90c65d6a.png"
+             }
+           , { name = ":myheart:"
+             , native = "❤️"
+             , sortOrder = 2
+             , skinVariations = Dict.fromList []
+             , keywords = []
+             , imgUrl = Nothing
+             }
+           , { name = ":opensource:"
+             , native = ":opensource:"
+             , sortOrder = 3
+             , skinVariations = Dict.fromList []
+             , keywords = []
+             , imgUrl = Just "https://static.mamot.fr/custom_emojis/images/000/198/609/original/6d1160723cd84c19.png"
+             }
+           ]
+       , customEmojisWidth = Nothing
+       , customEmojisHeight = Nothing
        }
 
    initialModel : Model
