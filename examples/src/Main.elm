@@ -45,6 +45,7 @@ pickerConfig =
     , offsetY = -450 -- y position relative to button
     , closeOnSelect = True -- whether or not to close after an emoji is picked
     , customEmojis =
+        -- custom emojis you may want to display
         [ { name = ":ablobattention:"
           , native = ":ablobattention:"
           , sortOrder = 1
