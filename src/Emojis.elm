@@ -1,13 +1,17 @@
 module Emojis exposing (Category, Emoji, emojiDict)
 
+{-| This module provides a list of emojis indexed by shortcode/names
+
+@docs Category, Emoji, emojiDict
+
+-}
+
 import Dict exposing (Dict)
 
 
-
--- typedef for a category of emojis. in the
--- main file, we render emojis by category.
-
-
+{-| typedef for a category of emojis. in the
+main file, we render emojis by category.
+-}
 type alias Category =
     { id : String -- short name for category
     , name : String -- display name for category
@@ -15,10 +19,8 @@ type alias Category =
     }
 
 
-
--- final data structure for an emoji
-
-
+{-| final data structure for an emoji
+-}
 type alias Emoji =
     { name : String -- name of emoji
     , native : String -- actual emoji (not codepoint)
@@ -29,6 +31,8 @@ type alias Emoji =
     }
 
 
+{-| dict containing all the emojis indexed by shortcode
+-}
 emojiDict : Dict String Emoji
 emojiDict =
     Dict.fromList
